@@ -23,9 +23,9 @@ function LoginState() {
 LoginState.prototype = new State();
 
 LoginState.prototype.prepareOnce = function(callback) {
-  this.DM.register('canim_intro', AnimationData, 'CAMERAS/TITLEMAP_LOGIN.ZMO');
-  this.DM.register('canim_inselect', AnimationData, 'CAMERAS/TITLEMAP_AVTLIST.ZMO');
-  this.DM.register('canim_outselect', AnimationData, 'CAMERAS/TITLEMAP_AVTLIST_RETURN.ZMO');
+  this.DM.register('canim_intro', AnimationData, '3DDATA/TITLE/CAMERA01_INTRO01.ZMO');
+  this.DM.register('canim_inselect', AnimationData, '3DDATA/TITLE/CAMERA01_INSELECT01.ZMO');
+  // this.DM.register('canim_outselect', AnimationData, 'CAMERAS/TITLEMAP_AVTLIST_RETURN.ZMO');
 
   // Start loading this, going to need it later.
   GDM.get('zone_names', 'list_zone', 'list_status');
@@ -36,7 +36,7 @@ LoginState.prototype.prepareOnce = function(callback) {
 
     // Continue by preloading the rest for now.
     self.DM.get('canim_inselect');
-    self.DM.get('canim_outselect');
+    // self.DM.get('canim_outselect');
   });
 };
 
@@ -84,7 +84,8 @@ LoginState.prototype.enter = function() {
 
   this.world = new MapManager();
   this.world.rootObj.position.set(5200, 5200, 0);
-  this.world.setMap(7, function() {
+  // @TODO: IMPORTANT : move this "4" wandering number to a constant (TITLE_MAP_ID ?)
+  this.world.setMap(4, function() {
     console.log('Map Ready');
     self.world.setViewerInfo(null);
   });
@@ -138,7 +139,7 @@ LoginState.prototype._doneSrvSel = function(serverId) {
 
   netLogin.channelList(serverId, function (data) {
     if (data.channels.length !== 1) {
-      waitDialog.setMessage('More than one channel found!');
+      waitDialog.setMessage('More than one channel (or none) found!');
       netLogin.end();
       return;
     }
@@ -176,9 +177,16 @@ LoginState.prototype._startCharSelect = function(waitDialog) {
   });
 };
 
-var CHARPOSITION = new THREE.Vector3(5742.0038, 5095.2579, 17.9782);
-var CHARDIRECTION = 230;
-var CHARSCALE = 3.5;
+const charPositions = [
+  new THREE.Vector3(5205.00, 5205.00, 1.00),
+  new THREE.Vector3(5202.70, 5206.53, 1.00),
+  new THREE.Vector3(5200.00, 5207.07, 1.00),
+  new THREE.Vector3(5197.30, 5206.53, 1.00),
+  new THREE.Vector3(5195.00, 5205.00, 1.00)
+];
+
+var CHARDIRECTION = 230; // gonna flip !
+var CHARSCALE = 1.5;
 
 LoginState.prototype._beginCharSelect = function(charData) {
   var self = this;
@@ -207,16 +215,19 @@ LoginState.prototype._beginCharSelect = function(charData) {
         }
       });
 
-      charObj.rootObj.position.copy(CHARPOSITION);
-      charObj.rootObj.rotateOnAxis(new THREE.Vector3(0,0,1), CHARDIRECTION/180*Math.PI);
+      charObj.rootObj.position.copy(charPositions[i]);
+      charObj.setDirection(160);
+      charObj.rootObj.rotateOnAxis(new THREE.Vector3(0, 0, 1), CHARDIRECTION/180*Math.PI);
       charObj.rootObj.scale.set(CHARSCALE, CHARSCALE, CHARSCALE);
-      charObj.rootObj.visible = false;
+      charObj.rootObj.visible = true;
       scene.add(charObj.rootObj);
       self.visChars.push(charObj);
+      // charObj.playIdleMotion(); // requires to preload motions ...
 
       // Add Zone name on behalf of the CharSelDialog
       var zoneStrKey = listZones.item(charInfo.zoneNo, 26);
       charInfo.zoneName = zoneNames.getByKey(zoneStrKey).text;
+
     })(i, charData.characters[i]);
   }
 
@@ -226,16 +237,6 @@ LoginState.prototype._beginCharSelect = function(charData) {
     console.log('INSELECT DONE');
 
     var dialog = ui.characterSelectDialog(charData.characters);
-    dialog.on('selectionChanged', function(characterIdx) {
-      for (var i = 0; i < self.visChars.length; ++i) {
-        var visChar = self.visChars[i];
-        if (i === characterIdx) {
-          visChar.rootObj.visible = true;
-        } else {
-          visChar.rootObj.visible = false;
-        }
-      }
-    });
 
     dialog.on('done', self._doneCharSel.bind(self));
 
@@ -265,21 +266,14 @@ LoginState.prototype._beginCharSelect = function(charData) {
         });
       }
     });
-
-    // Force a selection so the model becomes visible
-    dialog.emit('selectionChanged', 0);
   });
 };
 
 LoginState.prototype._beginCharacterCreate = function (charSelectDialog) {
   var self = this;
-  var visibleCharacter = null;
 
   // Hide all select characters
   for (var i = 0; i < this.visChars.length; ++i) {
-    if (this.visChars[i].rootObj.visible) {
-      visibleCharacter = this.visChars[i].rootObj;
-    }
     this.visChars[i].rootObj.visible = false;
   }
 
@@ -295,11 +289,12 @@ LoginState.prototype._beginCharacterCreate = function (charSelectDialog) {
     }
   });
 
-  charObj.rootObj.position.copy(CHARPOSITION);
+  charObj.rootObj.position.set(5200.05, 5200.18, 7.47);
   charObj.rootObj.rotateOnAxis(new THREE.Vector3(0,0,1), CHARDIRECTION/180*Math.PI);
-  charObj.rootObj.scale.set(CHARSCALE, CHARSCALE, CHARSCALE);
+  charObj.rootObj.scale.set(3.5, 3.5, 3.5);
   charObj.rootObj.visible = true;
   scene.add(charObj.rootObj);
+  // charObj.playIdleMotion(); // requires to preload motions
 
   // Create our dialog
   var dialog = ui.characterCreateDialog();
@@ -352,7 +347,8 @@ LoginState.prototype._beginCharacterCreate = function (charSelectDialog) {
   dialog.on('cancel', function() {
     charSelectDialog.show();
     scene.remove(charObj.rootObj);
-    visibleCharacter.visible = true;
+    // Reset all char visibility
+    self.visChars.forEach(ch => ch.rootObj.visible = true);
   });
 };
 

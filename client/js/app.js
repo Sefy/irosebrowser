@@ -160,6 +160,7 @@ global.slerp1d = require('./util/mathutil').slerp1d;
 global.enumToName = require('./util/generic').enumToName;
 global.debugValidateProps = require('./util/generic').debugValidateProps;
 global.VIRTUAL_FUNC = require('./util/generic').VIRTUAL_FUNC;
+global.CryptoJS = require('crypto-js');
 
 // Networking
 global.LoginClient = require('./net/loginclient');

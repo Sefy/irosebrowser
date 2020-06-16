@@ -158,13 +158,20 @@ RosePacket.prototype.readVector2 = function() {
 };
 RosePacket.prototype.readPartItem = function() {
   var item = {};
-  item.itemNo = this.readUint32();
-  item.gemOption1 = this.readUint16();
-  item.gemOption2 = this.readUint16();
-  item.gemOption3 = this.readUint16();
+
+  // weird, those are int (32) on server side ...
+  item.itemNo = this.readUint8();
+  item.gemOption1 = this.readUint8();
   item.socketCount = this.readUint8();
-  item.refineGrade = this.readUint16();
-  item.color = this.readUint32();
+  item.refineGrade = this.readUint8();
+
+  // item.itemNo = this.readUint32();
+  // item.gemOption1 = this.readUint16();
+  // item.gemOption2 = this.readUint16();
+  // item.gemOption3 = this.readUint16();
+  // item.socketCount = this.readUint8();
+  // item.refineGrade = this.readUint16();
+  // item.color = this.readUint32();
   return item;
 };
 RosePacket.prototype.readVisItem = function() {

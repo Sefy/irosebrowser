@@ -68,6 +68,11 @@ NpcPawn.motionFileCache = new DataCache(AnimationData);
 NpcPawn.prototype._getMotionData = function(motionIdx, callback) {
   GDM.get('npc_chars', function(charData) {
     var char = charData.characters[this.charIdx];
+    console.log('NPC id ' + this.charIdx + ' = ' + char);
+    // TODO: see why char is empty (not found) and remove this, or no NPC appears :<
+    if (!char) {
+      return;
+    }
     var animIdx = char.animations[motionIdx];
     var motionFile = charData.animations[animIdx];
     NpcPawn.motionFileCache.get(motionFile, callback);

@@ -85,7 +85,7 @@ RoseSocket.prototype.sendPacket = function(pak) {
   }
   var buf = pak.toBuffer();
   for (var i = 2; i < buf.length - 2; ++i) {
-    buf[i] ^= 0x61;
+    // buf[i] ^= 0x61; // requires to disable encrypt server side as well
   }
   this.send(buf.buffer);
 };

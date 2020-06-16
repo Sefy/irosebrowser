@@ -302,9 +302,10 @@ GameClient._registerHandler = function(cmd, handler) {
 
 GameClient._registerHandler(0x715, function(pak, data) {
   data.gender = pak.readUint8();
-  data.zoneNo = pak.readInt32();
+  data.zoneNo = pak.readInt16();
   data.posStart = pak.readVector2().divideScalar(100);
-  data.reviveZoneNo = pak.readInt32();
+  data.reviveZoneNo = pak.readInt16();
+
   data.parts = [];
   for (var j = 0; j < AVTBODYPART.Max; ++j) {
     data.parts.push(pak.readPartItem());
@@ -328,25 +329,27 @@ GameClient._registerHandler(0x715, function(pak, data) {
     data.stats.sen = pak.readInt16();
   }
   { // tagGrowAbility
-    data.hp = pak.readInt32();
-    data.mp = pak.readInt32();
-    data.exp = pak.readUint32();
+    data.hp = pak.readInt16();
+    data.mp = pak.readInt16();
+    data.exp = pak.readUint64();
     data.level = pak.readInt16();
     data.bonusPoint = pak.readInt16();
     data.skillPoint = pak.readInt16();
     data.bodySize = pak.readUint8();
     data.headSize = pak.readUint8();
-    data.penalExp = pak.readUint32();
+    data.penalExp = pak.readUint64();
+
     data.fameG = pak.readInt16();
     data.fameB = pak.readInt16();
+
+    pak.skip(2 * 10); // skip union points
+
+    var guildId = pak.readInt32();
+    var guildContrib = pak.readInt16();
+    var guildPos = pak.readInt8();
+
     data.pkFlag = pak.readInt16();
     data.stamina = pak.readInt16();
-    data.patHp = pak.readInt32();
-    data.patCoolTime = pak.readUint32();
-  }
-  data.currency = [];
-  for (var r = 0; r < 10; ++r) {
-    data.currency.push(pak.readInt32());
   }
   data.maintainStatus = [];
   for (var o = 0; o < 40; ++o) {
@@ -356,17 +359,20 @@ GameClient._registerHandler(0x715, function(pak, data) {
     mtns.dummy = pak.readInt16();
     data.maintainStatus.push(mtns);
   }
+
+  // Skip skills, for now .. (TODO: parse)
+  pak.skip(240);
+
   data.hotIcons = [];
   for (var p = 0; p < 48; ++p) {
     var icon = pak.readUint16();
     data.hotIcons.push(new HotIcons.Icon(icon & 0x1f, icon >> 5));
   }
+
   data.uniqueTag = pak.readUint32();
-  data.coolTime = [];
-  for (var q = 0; q < 20; ++q) {
-    data.coolTime.push(pak.readUint32());
-  }
+
   data.name = pak.readString();
+
   this._emitPE('char_data', data);
 });
 
@@ -383,6 +389,7 @@ GameClient._registerHandler(0x826, function(pak, data) {
   this._emitPE('server_time', data);
 });
 
+// doesn't exist on iRose (we fake it client side, as it's just a "join" listener for inventory & quest packets)
 GameClient._registerHandler(0x729, function(pak, data) {
   data.state = pak.readUint8();
   this._emitPE('preload_char', data);
@@ -407,6 +414,10 @@ GameClient._registerHandler(0x716, function(pak, data) {
     data.items.push(pak.readItem());
   }
   this._emitPE('inventory_data', data);
+  // emulate packet from server TODO: find another way
+  var preloadPacket = new RosePacket(0x729);
+  preloadPacket.addInt8(1);
+  this._handlePacket(preloadPacket);
 });
 
 GameClient._registerHandler(0x718, function(pak, data) {
@@ -517,6 +528,11 @@ GameClient._registerHandler(0x71b, function(pak, data) {
 
     data.vars = vars;
     this._emitPE('quest_vars', data);
+
+    // emulate packet from server TODO: find another way
+    var preloadPacket = new RosePacket(0x729);
+    preloadPacket.addInt8(2);
+    this._handlePacket(preloadPacket);
   } else if (data.result === RESULT_QUEST_DATA_QUESTLOG) {
     data.quests = [];
 

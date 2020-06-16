@@ -63,13 +63,14 @@ WorldClient.prototype.characterList = function(callback) {
     for (var i = 0; i < charCount; ++i) {
       var chdata = {};
       chdata.name = pak.readString();
-      chdata.gender = pak.readUint8();
-      chdata.hairColor = pak.readUint8();
+      chdata.gender = pak.readInt8();
       chdata.level = pak.readInt16();
       chdata.job = pak.readInt16();
-      chdata.zoneNo = pak.readUint32();
       chdata.remainTime = pak.readUint32();
-      chdata.nameChangeFlag = pak.readUint8();
+      chdata.zoneNo = pak.readUint16(); // added server side, didn't exist on iRose
+
+      pak.skip(1); // skip "platinumChar" bool
+
       chdata.parts = [];
       for (var j = 0; j < AVTBODYPART.Max; ++j) {
         chdata.parts.push(pak.readPartItem());
@@ -77,6 +78,7 @@ WorldClient.prototype.characterList = function(callback) {
 
       data.characters.push(chdata);
     }
+
     callback(data);
   });
 };
