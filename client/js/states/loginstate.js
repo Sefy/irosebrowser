@@ -4,9 +4,9 @@ var State = require('./state');
 var rUser = null;
 var rPass = null;
 
-var USE_LIVE_SERVER = true;
-var serverIp = '128.241.92.44';
-var serverName = '!Pegasus';
+var USE_LIVE_SERVER = false;
+var serverIp = '127.0.0.1';
+var serverName = '!Bonsoir';
 if (USE_LIVE_SERVER) {
   serverIp = '128.241.92.36';
   serverName = '1Draconis';
@@ -343,7 +343,6 @@ LoginState.prototype._beginCharacterCreate = function (charSelectDialog) {
       }
     });
   });
-
   dialog.on('cancel', function() {
     charSelectDialog.show();
     scene.remove(charObj.rootObj);

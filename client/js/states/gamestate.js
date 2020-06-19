@@ -144,7 +144,7 @@ GameState.prototype.enter = function() {
     if (pickInfo) {
       $('body').css('cursor', 'pointer');
     } else {
-      $('body').css('cursor', 'default');
+      $('body').css('cursor', '');
     }
   });
   InputManager.on('mousedown', function(e) {

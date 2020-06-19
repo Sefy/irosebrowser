@@ -129,7 +129,44 @@ InventoryData.prototype.setMoney = function(money) {
   this.emit('changed', money);
 };
 
+InventoryData.prototype.calculateLocation = function(position) {
+  if (position < INVEQUIPIDX.MAX) {
+    return ITEMLOC.EQUIPPED_EQUIP;
+  }
+  if (position < INVEQUIPIDX.MAX + 120) {
+    return ITEMLOC.INVENTORY;
+  }
+  if (position < INVEQUIPIDX.MAX + 120 + 3) {
+    return ITEMLOC.EQUIPPED_AMMO;
+  }
+  if (position < INVEQUIPIDX.MAX + 120 + 3 + 5) {
+    return ITEMLOC.EQUIPPED_PAT;
+  }
+
+  throw new Error('Inventory item out of bounds ' + position);
+}
+
 InventoryData.prototype.setItems = function(items) {
+  // Fill location here automatically, because we don't have it in iRose packet system
+  // This code looks quite repetitive, TODO: find a way to factorize
+  items.forEach((item, pos) => {
+    if (!item.location) {
+      item.location = this.calculateLocation(pos);
+
+      if (location === ITEMLOC.EQUIPPED_EQUIP) {
+        item.slotNo = pos;
+      } else if (location === ITEMLOC.INVENTORY) {
+        item.slotNo = pos - INVEQUIPIDX.MAX;
+      } else if (location === ITEMLOC.EQUIPPED_AMMO) {
+        item.slotNo = pos - INVEQUIPIDX.MAX - 120;
+      } else {
+        item.slotNo = pos - INVEQUIPIDX.MAX - 120 - 3;
+      }
+    }
+  });
+
+  items = items.filter(i => i.itemType);
+
   this.items = items;
   this.emit('changed');
 };

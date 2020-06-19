@@ -71,15 +71,19 @@ PreGameState.prototype.enter = function() {
 
     MC.hotIcons.setIcons(charData.hotIcons);
 
-    // TODO: charData.coolTime
+    MC.skills.setSkills(charData.skills);
+
+    // TODO: charData.
+
+    // Moved this up here because we can't wait for "preload_char" before listening to "inventory_data"
+    // or this will never be triggered, not sure of consequences tho
+    NetManager.world = GZM.map;
+    NetManager.watch(netWorld, netGame);
 
     netGame.once('preload_char', function(data) {
       if (data.state !== 1) {
         throw new Error('Got unexpected preload_char state.');
       }
-
-      NetManager.world = GZM.map;
-      NetManager.watch(netWorld, netGame);
 
       waitDialog.setMessage('Downloaded.  Lets rock\'n\'roll!');
 

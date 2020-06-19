@@ -6,13 +6,14 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   overflow: hidden;
+  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
 }
 
 .ui {
   color: white;
   font-family: 'Tahoma';
   font-size: small;
-  cursor: default;
+  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
   z-index: 0;
 
   .tooltip {
@@ -844,14 +845,14 @@ body {
 
 .generate-item-iconsheets-single-digit(@n, @i: 1) when (@i =< @n) {
   .item-iconsheet-@{i} {
-    background: url('//rbimg.br19.com/ICON0@{i}.png');
+    background: url('/data/3DDATA/CONTROL/RES/ICON0@{i}.png');
   }
   .generate-item-iconsheets-single-digit(@n, (@i + 1));
 }
 
 .generate-item-iconsheets-double-digit(@n, @i: 10) when (@i =< @n) {
   .item-iconsheet-@{i} {
-    background: url('//rbimg.br19.com/ICON@{i}.png');
+    background: url('/data/3DDATA/CONTROL/RES/ICON@{i}.png');
   }
   .generate-item-iconsheets-double-digit(@n, (@i + 1));
 }
@@ -860,7 +861,7 @@ body {
 
 .generate-skill-iconsheets-single-digit(@n, @i: 1) when (@i =< @n) {
   .skill-iconsheet-@{i} {
-    background: url('//rbimg.br19.com/SKILL0@{i}.png');
+    background: url('/data/3DDATA/CONTROL/RES/SKILL0@{i}.png');
   }
   .generate-skill-iconsheets-single-digit(@n, (@i + 1));
 }

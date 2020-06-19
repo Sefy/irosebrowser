@@ -43,7 +43,7 @@ global.AVTBODYPART = {
   Max: 10
 };
 global.AVTRIDEPART = {
-  Max: 5
+  Max: 4
 };
 global.AVTSHOTTYPE = {
   Max: 3

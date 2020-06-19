@@ -361,7 +361,12 @@ GameClient._registerHandler(0x715, function(pak, data) {
   }
 
   // Skip skills, for now .. (TODO: parse)
-  pak.skip(240);
+  data.skills = [];
+  for (var s = 0; s < 120; s++) {
+    var skillData = {};
+    skillData.skillIdx = pak.readUint16();
+    data.skills.push(skillData);
+  }
 
   data.hotIcons = [];
   for (var p = 0; p < 48; ++p) {
@@ -406,18 +411,19 @@ GameClient._registerHandler(0x724, function(pak, data) {
 });
 
 GameClient._registerHandler(0x716, function(pak, data) {
-  data.result = pak.readUint8();
+  // data.result = pak.readUint8();
+  data.result = 0x1; // didn't exist on iRose, apparently
   data.money = pak.readUint64();
-  var itemCount = pak.readUint32();
+
+  // Max equipped + Max inventory + Equipped ammo + Equipped pat
+  const itemCount = 12 + 120 + 3 + 4;
   data.items = [];
   for (var j = 0; j < itemCount; ++j) {
     data.items.push(pak.readItem());
   }
+
   this._emitPE('inventory_data', data);
-  // emulate packet from server TODO: find another way
-  var preloadPacket = new RosePacket(0x729);
-  preloadPacket.addInt8(1);
-  this._handlePacket(preloadPacket);
+  this._emitPE('preload_char', {state: 1});
 });
 
 GameClient._registerHandler(0x718, function(pak, data) {
@@ -529,10 +535,7 @@ GameClient._registerHandler(0x71b, function(pak, data) {
     data.vars = vars;
     this._emitPE('quest_vars', data);
 
-    // emulate packet from server TODO: find another way
-    var preloadPacket = new RosePacket(0x729);
-    preloadPacket.addInt8(2);
-    this._handlePacket(preloadPacket);
+    this._emitPE('preload_char', {state: 2});
   } else if (data.result === RESULT_QUEST_DATA_QUESTLOG) {
     data.quests = [];
 
@@ -614,15 +617,15 @@ function handleAddChar(pak, data) {
   data.posTo = pak.readVector2().divideScalar(100);
   data.command = pak.readUint16();
   data.targetObj = pak.readUint16();
-  data.rideObj = pak.readUint16();
+  // data.rideObj = pak.readUint16();
   data.moveMode = pak.readUint8();
   data.hp = pak.readInt32();
   data.teamNo = pak.readInt32();
-  data.statusFlags = pak.readUint64();
+  data.statusFlags = pak.readUint32();
   data.statusTimers = [];
-  for (var si = 0; si < ING.MAX; ++si) {
-    data.statusTimers.push(pak.readInt16());
-  }
+  // for (var si = 0; si < ING.MAX; ++si) {
+  //   data.statusTimers.push(pak.readInt16());
+  // }
 }
 function handleAddMob(pak, data) {
   handleAddChar(pak, data);
@@ -656,24 +659,24 @@ function handleAddAvatar(pak, data) {
   }
   data.job = pak.readInt16();
   data.level = pak.readUint8();
-  data.questEmoticon = pak.readInt16();
+  // data.questEmoticon = pak.readInt16();
   data.rideParts = [];
   for (var j = 0; j < AVTRIDEPART.Max; ++j) {
     data.rideParts.push(pak.readPartItem());
   }
   { // tagMOUNT
-    data.mount = {};
-    data.mount.mounted = pak.readUint8() !== 0;
-    data.mount.mountId = pak.readInt32();
-    data.mount.mountRunning = pak.readUint8() !== 0;
+    // data.mount = {};
+    // data.mount.mounted = pak.readUint8() !== 0;
+    // data.mount.mountId = pak.readInt32();
+    // data.mount.mountRunning = pak.readUint8() !== 0;
   }
   data.posZ = pak.readInt16();
-  data.subStatusFlags = pak.readUint64();
-  data.hairColor = pak.readUint8();
-  data.statusTimers = [];
-  for (var si = 0; si < ING.MAX; ++si) {
-    data.statusTimers.push(pak.readInt16());
-  }
+  data.subStatusFlags = pak.readUint32();
+  // data.hairColor = pak.readUint8();
+  // data.statusTimers = [];
+  // for (var si = 0; si < ING.MAX; ++si) {
+  //   data.statusTimers.push(pak.readInt16());
+  // }
   data.name = pak.readString();
 
   data.statusValues = {};

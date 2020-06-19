@@ -159,7 +159,7 @@ RosePacket.prototype.readVector2 = function() {
 RosePacket.prototype.readPartItem = function() {
   var item = {};
 
-  // weird, those are int (32) on server side ...
+  // weird, those are int (32) on server side ... (TODO: review, probably a bitfield)
   item.itemNo = this.readUint8();
   item.gemOption1 = this.readUint8();
   item.socketCount = this.readUint8();
@@ -174,38 +174,54 @@ RosePacket.prototype.readPartItem = function() {
   // item.color = this.readUint32();
   return item;
 };
+
+// Bit fields are hell
+// Each mask represents the number of bits on which read our data
+const ITEM_TYPE_MASK = 0b11111; // 5
+const ITEM_NUM_MASK  = 0b1111111111; // 10
+const ITEM_GEMOPT_MASK = 0b111111111; // 9
+const ITEM_DURA_MASK = 0b1111111; // 7
+const ITEM_LIFE_MASK = 0b1111111111; // 10
+const ITEM_GRADE_MASK = 0b1111; // 4
+
 RosePacket.prototype.readVisItem = function() {
   var item = {};
-  item.itemType = this.readUint16();
-  item.itemNo = this.readUint32();
-  item.charDbId = this.readUint32();
-  /* reserved */ this.readUint32();
-  item.color = this.readUint32();
+  const itemInfo = this.readUint16();
+  item.itemType = itemInfo & ITEM_TYPE_MASK;
+  item.itemNo = (itemInfo >> 5) & ITEM_NUM_MASK;
+  item.isCrafted = (itemInfo >> 15) & 1;
   return item;
 };
+
 RosePacket.prototype.readItem = function() {
   var item = this.readVisItem();
-  item.itemKey = this.readUint64();
-  item.isCrafted = this.readUint8();
-  item.gemOption1 = this.readUint16();
-  item.gemOption2 = this.readUint16();
-  item.gemOption3 = this.readUint16();
-  item.durability = this.readUint16();
-  item.itemLife = this.readUint16();
-  item.socketCount = this.readUint8();
-  item.isAppraised = this.readUint8();
-  item.refineGrade = this.readUint16();
-  item.quantity = this.readUint16();
-  item.location = this.readUint8();
-  item.slotNo = this.readUint32();
-  /*pickupTime*/ this.skip(14);
-  item.timeRemaining = this.readUint32();
-  item.moveLimits = this.readUint16();
-  item.bindOnAcquire = this.readUint8();
-  item.bindOnEquipUse = this.readUint8();
-  item.money = this.readUint32();
+
+  const itemType = item.itemType;
+
+  if (!itemType) {
+      this.skip(4);
+      return {};
+  }
+
+  if (itemType < 10 ) {
+      const itemQualityInfo = this.readUint16();
+      item.gemOption1 = itemQualityInfo & ITEM_GEMOPT_MASK;
+      item.durability = (itemQualityInfo >> 9) & ITEM_DURA_MASK;
+
+      const itemStatsInfo = this.readUint16();
+      item.itemLife = itemQualityInfo & ITEM_LIFE_MASK;
+      item.socketCount = (itemStatsInfo >> 10) & 1;
+      item.isAppraised = (itemStatsInfo >> 11) & 1;
+      item.refineGrade = (itemStatsInfo >> 12) & ITEM_GRADE_MASK;
+  } else if (itemType < 31) {
+      item.quantity = this.readUint32();
+  } else {
+      item.money = this.readUint32();
+  }
+
   return item;
 };
+
 RosePacket.prototype.readDropItem = function() {
   var item = {};
   item.position = this.readVector2().divideScalar(100);

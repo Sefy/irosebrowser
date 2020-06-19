@@ -42,7 +42,7 @@ ui.Titlebar.prototype._onMouseDown = function(downEvent) {
   }
 
   function mouseUp() {
-    self._element.css('cursor', 'default');
+    self._element.css('cursor', '');
     $(document).off('mousemove', mouseMove);
     $(document).off('mouseup', mouseUp);
   }

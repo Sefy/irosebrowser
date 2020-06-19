@@ -4,7 +4,7 @@ var SitCmd = require('./commands/sit');
 var SkillToObjCmd = require('./commands/skilltoobj');
 var SkillToSelfCmd = require('./commands/skilltoself');
 
-var DEFAULT_ATTACK_DISTANCE = 0.7;
+global.DEFAULT_ATTACK_DISTANCE = 0.7;
 
 /**
  * @constructor
