@@ -67,13 +67,12 @@ GameClient.prototype.joinZone = function(posZ, callback) {
 
     var data = {};
     data.objectIdx = pak.readUint16();
-    data.curHp = pak.readInt32();
-    data.curMp = pak.readInt32();
-    data.curExp = pak.readUint32();
-    data.penalExp = pak.readUint32();
+    data.curHp = pak.readInt16();
+    data.curMp = pak.readInt16();
+    data.curExp = pak.readUint64();
+    data.penalExp = pak.readUint64();
     { // VAR_GLOBAL
       data.globalVars = {};
-      data.globalVars.arenaEnergyReductionRate = pak.readInt32();
       data.worldProduct = pak.readInt16();
       data.updateTime = pak.readUint32();
       data.worldRate = pak.readInt16();
@@ -87,7 +86,6 @@ GameClient.prototype.joinZone = function(posZ, callback) {
     data.globalFlags = pak.readUint32();
     data.worldTime = pak.readUint32();
     data.teamNo = pak.readInt32();
-    data.questEmoticon = pak.readInt16();
     callback(data);
   });
 };
@@ -268,7 +266,6 @@ GameClient.prototype.toggleSit = function() {
 
 GameClient.prototype.pickupItem = function(objectIdx) {
   var opak = new RosePacket(0x7a7);
-  opak.addUint8(0); // m_btObjectCollision ??
   opak.addUint16(objectIdx);
   this.socket.sendPacket(opak);
 };
@@ -331,13 +328,13 @@ GameClient._registerHandler(0x715, function(pak, data) {
   { // tagGrowAbility
     data.hp = pak.readInt16();
     data.mp = pak.readInt16();
-    data.exp = pak.readUint64();
+    data.exp = pak.readUint64().toNumber();
     data.level = pak.readInt16();
     data.bonusPoint = pak.readInt16();
     data.skillPoint = pak.readInt16();
     data.bodySize = pak.readUint8();
     data.headSize = pak.readUint8();
-    data.penalExp = pak.readUint64();
+    data.penalExp = pak.readUint64().toNumber();
 
     data.fameG = pak.readInt16();
     data.fameB = pak.readInt16();
@@ -439,7 +436,7 @@ GameClient._registerHandler(0x718, function(pak, data) {
 });
 
 GameClient._registerHandler(0x79b, function(pak, data) {
-  data.xp = pak.readUint32();
+  data.xp = pak.readUint64().toNumber();
   data.stamina = pak.readUint16();
   data.fromObjectIdx = pak.readUint16();
   this._emitPE('set_xp', data);
@@ -583,13 +580,19 @@ GameClient._registerHandler(0x71a, function(pak, data) {
   this._emitPE('skill_data', data);
 });
 
-GameClient._registerHandler(0x7ec, function(pak, data) {
+GameClient._registerHandler(0x7a0, function(pak, data) {
   data.curHp = pak.readInt32();
   data.curMp = pak.readInt32();
   data.recoveryTickHp = pak.readInt32();
   data.recoveryTickMp = pak.readInt32();
   data.forceHpUpdate = pak.readUint8() !== 0;
   this._emitPE('char_hpmp_info', data);
+});
+
+GameClient._registerHandler(0x79f, function(pak, data) {
+  data.objectIdx = pak.readUint16();
+  data.curHp = pak.readUint32();
+  this._emitPE('set_hp', data);
 });
 
 GameClient._registerHandler(0x7a5, function(pak, data) {
@@ -642,11 +645,11 @@ function handleAddNpc(pak, data) {
 }
 function handleAddAvatar(pak, data) {
   handleAddChar(pak, data);
-  data.dbId = pak.readUint32();
+  // data.dbId = pak.readUint32();
   data.gender = pak.readUint8();
-  data.runSpeedBase = pak.readInt16();
+  // data.runSpeedBase = pak.readInt16();
   data.runSpeed = pak.readInt16();
-  data.attackSpeedBase = pak.readInt16();
+  // data.attackSpeedBase = pak.readInt16();
   data.attackSpeed = pak.readInt16();
   data.weightRate = pak.readUint8();
   data.parts = [];
@@ -680,40 +683,41 @@ function handleAddAvatar(pak, data) {
   data.name = pak.readString();
 
   data.statusValues = {};
-  if (data.statusFlags.hasBits(FLAG_ING.MAX_HP)) {
-    data.statusValues.maxHp = pak.readInt16();
-  }
+  // TODO: fix without int64 format
+  // if (data.statusFlags.hasBits(FLAG_ING.MAX_HP)) {
+  //   data.statusValues.maxHp = pak.readInt16();
+  // }
+  //
+  // if (data.statusFlags.hasBits(FLAG_ING.INC_MOV_SPEED)) {
+  //   data.statusValues.incMovSpeed = pak.readInt16();
+  // }
+  //
+  // if (data.statusFlags.hasBits(FLAG_ING.DEC_MOV_SPEED)) {
+  //   data.statusValues.decMovSpeed = pak.readInt16();
+  // }
+  //
+  // if (data.statusFlags.hasBits(FLAG_ING.INC_ATK_SPEED)) {
+  //   data.statusValues.incAtkSpeed = pak.readInt16();
+  // }
+  //
+  // if (data.statusFlags.hasBits(FLAG_ING.DEC_ATK_SPEED)) {
+  //   data.statusValues.decAtkSpeed = pak.readInt16();
+  // }
+  //
+  // if (data.statusFlags.hasBits(FLAG_ING.DEC_LIFE_TIME)) {
+  //   data.statusValues.callerIdx = data.readUint16();
+  //
+  //   if (data.statusValues.callerIdx) {
+  //     data.statusValues.summonedSkillIdx = data.readInt16();
+  //   }
+  // }
 
-  if (data.statusFlags.hasBits(FLAG_ING.INC_MOV_SPEED)) {
-    data.statusValues.incMovSpeed = pak.readInt16();
-  }
-
-  if (data.statusFlags.hasBits(FLAG_ING.DEC_MOV_SPEED)) {
-    data.statusValues.decMovSpeed = pak.readInt16();
-  }
-
-  if (data.statusFlags.hasBits(FLAG_ING.INC_ATK_SPEED)) {
-    data.statusValues.incAtkSpeed = pak.readInt16();
-  }
-
-  if (data.statusFlags.hasBits(FLAG_ING.DEC_ATK_SPEED)) {
-    data.statusValues.decAtkSpeed = pak.readInt16();
-  }
-
-  if (data.statusFlags.hasBits(FLAG_ING.DEC_LIFE_TIME)) {
-    data.statusValues.callerIdx = data.readUint16();
-
-    if (data.statusValues.callerIdx) {
-      data.statusValues.summonedSkillIdx = data.readInt16();
-    }
-  }
-
-  if (data.subStatusFlags.hasBits(FLAG_ING_SUB.STORE)) {
-    data.storeSkin = pak.readInt16();
-    data.storeTitle = pak.readString();
-  } else if (data.subStatusFlags.hasBits(FLAG_ING_SUB.CHAT)) {
-    data.chatTitle = pak.readString();
-  }
+  // if (data.subStatusFlags.hasBits(FLAG_ING_SUB.STORE)) {
+  //   data.storeSkin = pak.readInt16();
+  //   data.storeTitle = pak.readString();
+  // } else if (data.subStatusFlags.hasBits(FLAG_ING_SUB.CHAT)) {
+  //   data.chatTitle = pak.readString();
+  // }
 
   if (!pak.isReadEof()) {
     data.clan = {};
@@ -775,8 +779,11 @@ GameClient._registerHandler(0x798, function(pak, data) {
 GameClient._registerHandler(0x799, function(pak, data) {
   data.attackerObjectIdx = pak.readUint16();
   data.defenderObjectIdx = pak.readUint16();
-  data.amount = pak.readUint32();
-  data.flags = pak.readUint32();
+
+  var dmg = pak.readUint16();
+  data.amount = dmg & 0b11111111111;
+  data.flags = dmg >> 11 & 0b11111;
+
   this._emitPE('damage', data);
 
   while(!pak.isReadEof()) {
@@ -966,6 +973,7 @@ GameClient._registerHandler(0x7a6, function(pak, data) {
 GameClient._registerHandler(0x7a7, function(pak, data) {
   data.objectIdx = pak.readUint16();
   data.result = pak.readUint8();
+  data.inventorySlot = pak.readUint16();
 
   if (data.result === REPLY_GET_FIELDITEM_REPLY_OK) {
     data.item = pak.readItem();

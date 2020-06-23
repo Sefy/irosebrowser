@@ -129,39 +129,12 @@ InventoryData.prototype.setMoney = function(money) {
   this.emit('changed', money);
 };
 
-InventoryData.prototype.calculateLocation = function(position) {
-  if (position < INVEQUIPIDX.MAX) {
-    return ITEMLOC.EQUIPPED_EQUIP;
-  }
-  if (position < INVEQUIPIDX.MAX + 120) {
-    return ITEMLOC.INVENTORY;
-  }
-  if (position < INVEQUIPIDX.MAX + 120 + 3) {
-    return ITEMLOC.EQUIPPED_AMMO;
-  }
-  if (position < INVEQUIPIDX.MAX + 120 + 3 + 5) {
-    return ITEMLOC.EQUIPPED_PAT;
-  }
-
-  throw new Error('Inventory item out of bounds ' + position);
-}
-
 InventoryData.prototype.setItems = function(items) {
-  // Fill location here automatically, because we don't have it in iRose packet system
+  // Fill location here automatically, since we don't have it in iRose packet system
   // This code looks quite repetitive, TODO: find a way to factorize
   items.forEach((item, pos) => {
-    if (!item.location) {
-      item.location = this.calculateLocation(pos);
-
-      if (location === ITEMLOC.EQUIPPED_EQUIP) {
-        item.slotNo = pos;
-      } else if (location === ITEMLOC.INVENTORY) {
-        item.slotNo = pos - INVEQUIPIDX.MAX;
-      } else if (location === ITEMLOC.EQUIPPED_AMMO) {
-        item.slotNo = pos - INVEQUIPIDX.MAX - 120;
-      } else {
-        item.slotNo = pos - INVEQUIPIDX.MAX - 120 - 3;
-      }
+    if (!item.location || !item.slotNo) {
+      InventoryData.addLocationAndSlotFromPosition(item, pos);
     }
   });
 
@@ -295,5 +268,36 @@ InventoryData.prototype.findByLocSlot = function(location, slotNo) {
 
   return null;
 };
+
+InventoryData.calculateLocation = function(position) {
+  if (position < INVEQUIPIDX.MAX) {
+    return ITEMLOC.EQUIPPED_EQUIP;
+  }
+  if (position < INVEQUIPIDX.MAX + 120) {
+    return ITEMLOC.INVENTORY;
+  }
+  if (position < INVEQUIPIDX.MAX + 120 + 3) {
+    return ITEMLOC.EQUIPPED_AMMO;
+  }
+  if (position < INVEQUIPIDX.MAX + 120 + 3 + 5) {
+    return ITEMLOC.EQUIPPED_PAT;
+  }
+
+  throw new Error('Inventory item out of bounds ' + position);
+}
+
+InventoryData.addLocationAndSlotFromPosition = function(item, position) {
+  item.location = this.calculateLocation(position);
+
+  if (item.location === ITEMLOC.EQUIPPED_EQUIP) {
+    item.slotNo = position;
+  } else if (item.location === ITEMLOC.INVENTORY) {
+    item.slotNo = position - INVEQUIPIDX.MAX;
+  } else if (item.location === ITEMLOC.EQUIPPED_AMMO) {
+    item.slotNo = position - INVEQUIPIDX.MAX - 120;
+  } else {
+    item.slotNo = position - INVEQUIPIDX.MAX - 120 - 3;
+  }
+}
 
 module.exports = InventoryData;

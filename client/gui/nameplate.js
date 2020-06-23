@@ -97,8 +97,11 @@ ui.createNamePlate = function(gameObject) {
   bitmap.height = 64;
   var texture = new THREE.Texture(bitmap);
 
-  function __update() {
+  function __update(percent = 100) {
     g.clearRect(0, 0, 128, 64);
+    // HP bar @TODO: review this, totally ugly :x
+    g.fillStyle = "#d92027";
+    g.fillRect(0, 40, 128 * percent / 100, 18);
     _drawNamePlate(g, gameObject);
     texture.needsUpdate = true;
   }
@@ -106,6 +109,7 @@ ui.createNamePlate = function(gameObject) {
   gameObject.on('name_changed', __update);
   gameObject.on('selected', __update);
   gameObject.on('deselected', __update);
+  gameObject.on('update_hp', (hp, max) => __update(hp * 100 / max));
 
   return texture;
 };

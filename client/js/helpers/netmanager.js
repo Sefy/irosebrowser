@@ -180,7 +180,7 @@ _NetManager.prototype.watch = function(wn, gn) {
     char.gender = data.gender;
     char.hp = data.hp;
     char.job = data.job;
-    char.hairColor = data.hairColor;
+    // char.hairColor = data.hairColor;
     char.visParts = data.parts;
     char.stats = new CharStats(char);
     char.stats.attackSpeed = data.attackSpeed;
@@ -197,6 +197,10 @@ _NetManager.prototype.watch = function(wn, gn) {
     mob.serverObjectIdx = data.objectIdx;
     mob.stats = new NpcStats(mob, data.charIdx);
     mob.setPosition(data.position.x, data.position.y, 10);
+
+    mob.hp = data.hp;
+    mob.maxHp = mob.stats.getMaxHp(); // store result on spawn
+
     mob.pawn = new NpcPawn(mob);
     mob.setChar(Math.abs(data.charIdx));
     mob.ingStatus = new IngStatus(mob.pawn.rootObj, data.statusFlags, data.statusTimers);
@@ -227,8 +231,14 @@ _NetManager.prototype.watch = function(wn, gn) {
         var itemData = GDM.getNow('item_data');
         var name = itemData.getName(data.item.itemType, data.item.itemNo);
 
+        InventoryData.addLocationAndSlotFromPosition(data.item, data.inventorySlot);
+
         if (ITMSTACKABLE[data.item.itemType]) {
-          GCM.system('You have obtained ' + name + ' (' + data.item.quantity + ')');
+          // Dropped quantity is = new quantity - old quantity ... Has to find previous inventory value
+          const inventoryRef = MC.inventory.findByLocSlot(data.item.location, data.item.slotNo);
+          const previousQuantity = inventoryRef ? inventoryRef.quantity : 0;
+
+          GCM.system('You have obtained ' + name + ' (' + (data.item.quantity - previousQuantity) + ')');
         } else {
           GCM.system('You have obtained ' + name);
         }
@@ -370,6 +380,13 @@ _NetManager.prototype.watch = function(wn, gn) {
     }
   });
 
+  // TODO: fix, seems like MaxHP value ...
+  gn.on('set_hp', function(data) {
+    const ref = GZM.findByServerObjectIdx(data.objectIdx);
+    ref.hp = data.curHp;
+    ref.emit('update_hp', ref.hp, ref.maxHp);
+  });
+
   gn.on('char_hpmp_info', function(data) {
     MC.hp = data.curHp;
     MC.mp = data.curMp;
@@ -398,6 +415,8 @@ _NetManager.prototype.watch = function(wn, gn) {
       GCM.system('You are now level ' + data.level + '!');
       MC.level = data.level;
       MC.xp = data.xp;
+      // on level up, regen HP/MP :)
+      MC.hp = MC.stats.getMaxHp();
       MC.statPoints = data.statPoints;
       MC.skillPoints = data.skillPoints;
       MC.changed();

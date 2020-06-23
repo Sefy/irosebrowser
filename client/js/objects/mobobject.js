@@ -10,6 +10,9 @@ function MobObject(world) {
   this.eventIdx = undefined;
   this.stats = undefined;
   this.name = '';
+  this.hp = undefined;
+
+  this.on('damage', this._onDamage.bind(this));
 }
 MobObject.prototype = Object.create( ActorObject.prototype );
 
@@ -28,6 +31,11 @@ MobObject.prototype.setChar = function(charIdx) {
     self.name = data.text;
     self.emit('name_changed');
   });
+};
+
+MobObject.prototype._onDamage = function(amount) {
+  this.hp -= amount;
+  this.emit('update_hp', this.hp, this.maxHp);
 };
 
 module.exports = MobObject;

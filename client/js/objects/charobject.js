@@ -79,6 +79,7 @@ CharObject.prototype.getAbilityValue = function(abilType) {
 
 CharObject.prototype._onDamage = function(amount) {
   this.hp -= amount;
+  this.emit('update_hp', this.hp, this.stats.getMaxHp());
 };
 
 CharObject.prototype.debugValidate = function() {

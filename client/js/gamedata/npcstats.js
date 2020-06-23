@@ -1,4 +1,6 @@
 global.NPC_DATA = {
+  LEVEL: 7,
+  HP: 8,
   ATK_SPEED: 14,
   ATK_DISTANCE: 26,
   HEIGHT: 42
@@ -26,5 +28,9 @@ NpcStats.prototype.getHeight = function() {
     return parseInt(this.data[NPC_DATA.HEIGHT]) / 100;
   }
 };
+
+NpcStats.prototype.getMaxHp = function() {
+  return this.data[NPC_DATA.LEVEL] * this.data[NPC_DATA.HP];
+}
 
 module.exports = NpcStats;
