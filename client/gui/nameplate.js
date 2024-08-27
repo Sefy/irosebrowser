@@ -99,10 +99,14 @@ ui.createNamePlate = function(gameObject) {
 
   function __update(percent = 100) {
     g.clearRect(0, 0, 128, 64);
-    // HP bar @TODO: review this, totally ugly :x
-    g.fillStyle = "#d92027";
-    g.fillRect(0, 40, 128 * percent / 100, 18);
+
     _drawNamePlate(g, gameObject);
+
+    if (gameObject.selected) {
+      // HP bar @TODO: review this, totally ugly :x
+      g.fillStyle = "rgba(234,17,24,0.63)";
+      g.fillRect(0, 40, 128 * percent / 100, 18);
+    }
     texture.needsUpdate = true;
   }
   __update();

@@ -67,14 +67,19 @@ WorldClient.prototype.characterList = function(callback) {
       chdata.level = pak.readInt16();
       chdata.job = pak.readInt16();
       chdata.remainTime = pak.readUint32();
-      chdata.zoneNo = pak.readUint16(); // added server side, didn't exist on iRose
+      // chdata.zoneNo = pak.readUint16(); // added server side, didn't exist on iRose
 
       pak.skip(1); // skip "platinumChar" bool
 
       chdata.parts = [];
       for (var j = 0; j < AVTBODYPART.Max; ++j) {
-        chdata.parts.push(pak.readPartItem());
+        chdata.parts.push(pak.readPartItem(true));
       }
+
+      const subWeapon = chdata.parts[8];
+
+      chdata.parts[8] = chdata.parts[9];
+      chdata.parts[9] = subWeapon;
 
       data.characters.push(chdata);
     }
@@ -127,12 +132,15 @@ WorldClient.prototype.deleteCharacter = function(index, name, doDelete, callback
 WorldClient.prototype.createCharacter = function(name, gender, face, hairStyle, hairColor, callback) {
   var opak = new RosePacket(0x713);
   opak.addUint8(gender);
-  opak.addUint32(hairColor);
-  opak.addUint32(hairStyle);
-  opak.addUint32(face);
-  opak.addUint32(0); // "Weapon Type"
-  opak.addUint32(0); // "Zone No"
+  opak.addUint8(0); // "Birth stone" :)
+  opak.addUint8(hairStyle);
+  opak.addUint8(face);
+  opak.addUint8(0); // weapon type lol, narose ...
+  opak.addUint16(0); // "Start point"
   opak.addString(name);
+
+  // opak.addUint32(hairColor);
+
   this.socket.sendPacket(opak);
 
   this.son('packet', function(pak) {

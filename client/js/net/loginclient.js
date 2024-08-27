@@ -29,6 +29,8 @@ LoginClient.prototype.connect = function(host, port, callback) {
   this.socket.connect(host, port);
   this.son('connect', function() {
     var pak = new RosePacket(0x703);
+    // pak.addString("prout");
+
     this.socket.sendPacket(pak);
     this.son('packet', function(pak) {
       if (pak.cmd !== 0x7ff) {

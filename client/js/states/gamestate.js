@@ -135,7 +135,7 @@ GameState.prototype.enter = function() {
     console.log('ZONE JOINED');
   });
 
-  ui.gameUI(MC);
+  window.gameUi = ui.gameUI(MC);
 
   var self = this;
   InputManager.on('mousemove', function(e) {
@@ -147,6 +147,7 @@ GameState.prototype.enter = function() {
       $('body').css('cursor', '');
     }
   });
+
   InputManager.on('mousedown', function(e) {
     e.preventDefault();
 
@@ -186,6 +187,23 @@ GameState.prototype.enter = function() {
         var moveToPos = pickInfo.point;
         GC.moveTo(moveToPos.x, moveToPos.y);
         self._setPickPos(moveToPos);
+      }
+    }
+  });
+
+  InputManager.on('keyup', e => {
+    if (e.altKey) {
+      switch (e.key) {
+        case 'v':
+        case 'i':
+          gameUi.inventory.toggle();
+          break;
+        case 'a':
+          gameUi.character.toggle();
+          break;
+        case 's':
+          gameUi.skillList.toggle();
+          break;
       }
     }
   });

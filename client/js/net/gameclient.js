@@ -21,7 +21,8 @@ function GameClient() {
   });
 
   this.socket.logIgnoreCmds.push(0x7ec);
-  this.socket.logIgnoreCmds.push(0x720);
+  this.socket.logIgnoreCmds.push(0x7ec);
+  this.socket.logIgnoreCmds.push(0x797);
 }
 GameClient.prototype = new EventEmitter();
 
@@ -57,6 +58,7 @@ GameClient.prototype.end = function() {
 
 GameClient.prototype.joinZone = function(posZ, callback) {
   var opak = new RosePacket(0x753);
+  opak.addUint8(0);
   opak.addInt16(posZ);
   this.socket.sendPacket(opak);
 
@@ -277,7 +279,11 @@ GameClient.prototype.pickupItem = function(objectIdx) {
  * @private
  */
 GameClient.prototype._emitPE = function(event, data) {
-  netConsole.debug('client:event<'+this.socket.name+'>', event, data);
+  // happens way too much to be logged
+  if (event !== 'obj_moveto') {
+    netConsole.debug('client:event<' + this.socket.name + '>', event, data);
+  }
+
   this.emit.call(this, event, data);
 };
 
@@ -299,17 +305,20 @@ GameClient._registerHandler = function(cmd, handler) {
 
 GameClient._registerHandler(0x715, function(pak, data) {
   data.gender = pak.readUint8();
-  data.zoneNo = pak.readInt16();
+  data.zoneNo = pak.readUint16();
   data.posStart = pak.readVector2().divideScalar(100);
-  data.reviveZoneNo = pak.readInt16();
+  data.reviveZoneNo = pak.readUint16();
+
+  // pak.readUint32(); // face
+  // pak.readUint32(); // hair, but useless because reread a bit after lol ...
 
   data.parts = [];
   for (var j = 0; j < AVTBODYPART.Max; ++j) {
     data.parts.push(pak.readPartItem());
   }
   { // tagBasicINFO
-    data.birthStone = pak.readInt8();
-    data.faceIdx = pak.readInt8();
+    data.birthStone = pak.readUint8();
+    data.faceIdx = pak.readUint8();
     data.hairColor = pak.readInt8();
     data.job = pak.readInt16();
     data.union = pak.readInt8();
@@ -328,13 +337,13 @@ GameClient._registerHandler(0x715, function(pak, data) {
   { // tagGrowAbility
     data.hp = pak.readInt16();
     data.mp = pak.readInt16();
-    data.exp = pak.readUint64().toNumber();
+    data.exp = pak.readUint32();
     data.level = pak.readInt16();
     data.bonusPoint = pak.readInt16();
     data.skillPoint = pak.readInt16();
     data.bodySize = pak.readUint8();
     data.headSize = pak.readUint8();
-    data.penalExp = pak.readUint64().toNumber();
+    data.penalExp = pak.readUint32();
 
     data.fameG = pak.readInt16();
     data.fameB = pak.readInt16();
@@ -366,7 +375,7 @@ GameClient._registerHandler(0x715, function(pak, data) {
   }
 
   data.hotIcons = [];
-  for (var p = 0; p < 48; ++p) {
+  for (var p = 0; p < 32; ++p) {
     var icon = pak.readUint16();
     data.hotIcons.push(new HotIcons.Icon(icon & 0x1f, icon >> 5));
   }
@@ -436,7 +445,7 @@ GameClient._registerHandler(0x718, function(pak, data) {
 });
 
 GameClient._registerHandler(0x79b, function(pak, data) {
-  data.xp = pak.readUint64().toNumber();
+  data.xp = pak.readUint32();
   data.stamina = pak.readUint16();
   data.fromObjectIdx = pak.readUint16();
   this._emitPE('set_xp', data);

@@ -156,14 +156,22 @@ RosePacket.prototype.readVector2 = function() {
   var y = this.readFloat();
   return new THREE.Vector2(x, y);
 };
-RosePacket.prototype.readPartItem = function() {
+RosePacket.prototype.readPartItem = function(charSelectMode = false) {
   var item = {};
 
+  if (charSelectMode) {
+    item.itemNo = this.readUint16();
+    item.refineGrade = this.readUint16();
+  } else {
+    const buff = this.readUint32();
+
+    item.itemNo = buff & ITEM_NUM_MASK;
+    item.gemOption1 = (buff >> 10) & ITEM_GEMOPT_MASK;
+    item.socketCount = (buff >> (10 + 5)) & 0b1;
+    item.refineGrade = (buff >> (10 + 5 + 1)) & ITEM_GRADE_MASK;
+  }
+
   // weird, those are int (32) on server side ... (TODO: review, probably a bitfield)
-  item.itemNo = this.readUint8();
-  item.gemOption1 = this.readUint8();
-  item.socketCount = this.readUint8();
-  item.refineGrade = this.readUint8();
 
   // item.itemNo = this.readUint32();
   // item.gemOption1 = this.readUint16();
