@@ -20,6 +20,8 @@ if (EXPERIMENTAL_WS_LOAD) {
     }
   });
   ROSELoader.load = function(path, callback) {
+    path = path.toLowerCase();
+    console.log('Loading file path : ', path);
     var thisReqIdx = iopReqIdx++;
     iopReqHandlers[thisReqIdx] = callback;
     iop.emit('fr', thisReqIdx, path);
@@ -29,7 +31,7 @@ if (EXPERIMENTAL_WS_LOAD) {
 
   ROSELoader.load = function(path, callback) {
     // Check for errors.
-    var normPath = normalizePath(path);
+    var normPath = normalizePath(path.toLowerCase());
     if (normPath !== path) {
       //console.warn('Unnormalized path used.', path);
       path = normPath;

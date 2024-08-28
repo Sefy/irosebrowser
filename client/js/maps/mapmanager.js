@@ -139,6 +139,7 @@ MapManager.prototype.findHighPoint = function(x, y, fromZ) {
   caster = new THREE.Raycaster(new THREE.Vector3(x, y, fromZ), new THREE.Vector3(0, 0, 1));
   pickInfo = this.rayPick(caster);
   if (!pickInfo) {
+    // @TODO: this happens a lot, see if it's OK or a problem that should be addressed ..
     console.warn('Attempted to find high point in an unloaded chunk.');
   } else {
     console.warn('Uhhhh... Someone fell through the floor...');

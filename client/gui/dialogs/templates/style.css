@@ -6,7 +6,7 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   overflow: hidden;
-  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
+  cursor: url('/data/3ddata/control/res/cursor.png'), auto;
 }
 .thin-scrollbar::-webkit-scrollbar {
   width: 5px;
@@ -27,7 +27,7 @@ body {
   color: white;
   font-family: 'Tahoma';
   font-size: small;
-  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
+  cursor: url('/data/3ddata/control/res/cursor.png'), auto;
   z-index: 0;
   /* Some helper classes */
   /* Generic UI panel */
@@ -779,151 +779,151 @@ body {
   border-top-right-radius: 0;
 }
 .item-iconsheet-1 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON01.png');
+  background: url('/data/3ddata/control/res/icon01.png');
 }
 .item-iconsheet-2 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON02.png');
+  background: url('/data/3ddata/control/res/icon02.png');
 }
 .item-iconsheet-3 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON03.png');
+  background: url('/data/3ddata/control/res/icon03.png');
 }
 .item-iconsheet-4 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON04.png');
+  background: url('/data/3ddata/control/res/icon04.png');
 }
 .item-iconsheet-5 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON05.png');
+  background: url('/data/3ddata/control/res/icon05.png');
 }
 .item-iconsheet-6 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON06.png');
+  background: url('/data/3ddata/control/res/icon06.png');
 }
 .item-iconsheet-7 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON07.png');
+  background: url('/data/3ddata/control/res/icon07.png');
 }
 .item-iconsheet-8 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON08.png');
+  background: url('/data/3ddata/control/res/icon08.png');
 }
 .item-iconsheet-9 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON09.png');
+  background: url('/data/3ddata/control/res/icon09.png');
 }
 .item-iconsheet-10 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON10.png');
+  background: url('/data/3ddata/control/res/icon10.png');
 }
 .item-iconsheet-11 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON11.png');
+  background: url('/data/3ddata/control/res/icon11.png');
 }
 .item-iconsheet-12 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON12.png');
+  background: url('/data/3ddata/control/res/icon12.png');
 }
 .item-iconsheet-13 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON13.png');
+  background: url('/data/3ddata/control/res/icon13.png');
 }
 .item-iconsheet-14 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON14.png');
+  background: url('/data/3ddata/control/res/icon14.png');
 }
 .item-iconsheet-15 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON15.png');
+  background: url('/data/3ddata/control/res/icon15.png');
 }
 .item-iconsheet-16 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON16.png');
+  background: url('/data/3ddata/control/res/icon16.png');
 }
 .item-iconsheet-17 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON17.png');
+  background: url('/data/3ddata/control/res/icon17.png');
 }
 .item-iconsheet-18 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON18.png');
+  background: url('/data/3ddata/control/res/icon18.png');
 }
 .item-iconsheet-19 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON19.png');
+  background: url('/data/3ddata/control/res/icon19.png');
 }
 .item-iconsheet-20 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON20.png');
+  background: url('/data/3ddata/control/res/icon20.png');
 }
 .item-iconsheet-21 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON21.png');
+  background: url('/data/3ddata/control/res/icon21.png');
 }
 .item-iconsheet-22 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON22.png');
+  background: url('/data/3ddata/control/res/icon22.png');
 }
 .item-iconsheet-23 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON23.png');
+  background: url('/data/3ddata/control/res/icon23.png');
 }
 .item-iconsheet-24 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON24.png');
+  background: url('/data/3ddata/control/res/icon24.png');
 }
 .item-iconsheet-25 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON25.png');
+  background: url('/data/3ddata/control/res/icon25.png');
 }
 .item-iconsheet-26 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON26.png');
+  background: url('/data/3ddata/control/res/icon26.png');
 }
 .item-iconsheet-27 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON27.png');
+  background: url('/data/3ddata/control/res/icon27.png');
 }
 .item-iconsheet-28 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON28.png');
+  background: url('/data/3ddata/control/res/icon28.png');
 }
 .item-iconsheet-29 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON29.png');
+  background: url('/data/3ddata/control/res/icon29.png');
 }
 .item-iconsheet-30 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON30.png');
+  background: url('/data/3ddata/control/res/icon30.png');
 }
 .item-iconsheet-31 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON31.png');
+  background: url('/data/3ddata/control/res/icon31.png');
 }
 .item-iconsheet-32 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON32.png');
+  background: url('/data/3ddata/control/res/icon32.png');
 }
 .item-iconsheet-33 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON33.png');
+  background: url('/data/3ddata/control/res/icon33.png');
 }
 .item-iconsheet-34 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON34.png');
+  background: url('/data/3ddata/control/res/icon34.png');
 }
 .item-iconsheet-35 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON35.png');
+  background: url('/data/3ddata/control/res/icon35.png');
 }
 .item-iconsheet-36 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON36.png');
+  background: url('/data/3ddata/control/res/icon36.png');
 }
 .item-iconsheet-37 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON37.png');
+  background: url('/data/3ddata/control/res/icon37.png');
 }
 .item-iconsheet-38 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON38.png');
+  background: url('/data/3ddata/control/res/icon38.png');
 }
 .item-iconsheet-39 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON39.png');
+  background: url('/data/3ddata/control/res/icon39.png');
 }
 .item-iconsheet-40 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON40.png');
+  background: url('/data/3ddata/control/res/icon40.png');
 }
 .item-iconsheet-41 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON41.png');
+  background: url('/data/3ddata/control/res/icon41.png');
 }
 .item-iconsheet-42 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON42.png');
+  background: url('/data/3ddata/control/res/icon42.png');
 }
 .item-iconsheet-43 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON43.png');
+  background: url('/data/3ddata/control/res/icon43.png');
 }
 .item-iconsheet-44 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON44.png');
+  background: url('/data/3ddata/control/res/icon44.png');
 }
 .item-iconsheet-45 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON45.png');
+  background: url('/data/3ddata/control/res/icon45.png');
 }
 .item-iconsheet-46 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON46.png');
+  background: url('/data/3ddata/control/res/icon46.png');
 }
 .item-iconsheet-47 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON47.png');
+  background: url('/data/3ddata/control/res/icon47.png');
 }
 .item-iconsheet-48 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON48.png');
+  background: url('/data/3ddata/control/res/icon48.png');
 }
 .item-iconsheet-49 {
-  background: url('/data/3DDATA/CONTROL/RES/ICON49.png');
+  background: url('/data/3ddata/control/res/icon49.png');
 }
 .skill-iconsheet-1 {
   background: url('/data/3DDATA/CONTROL/RES/SKILL01.png');

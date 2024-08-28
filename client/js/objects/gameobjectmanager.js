@@ -90,4 +90,11 @@ GameObjectManager.prototype.update = function(delta) {
   }
 };
 
+/**
+ * @returns {ItemObject[]}
+ */
+GameObjectManager.prototype.getItemObjects = function() {
+  return this.objects.filter(o => o instanceof ItemObject);
+};
+
 module.exports = GameObjectManager;

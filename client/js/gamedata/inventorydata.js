@@ -174,8 +174,7 @@ InventoryData.prototype.changeItems = function(changeItems) {
     for (var j = 0; j < this.items.length; ++j) {
       var item = this.items[j]
 
-      if (item.itemKey.lo === changeItem.itemKey.lo &&
-          item.itemKey.hi === changeItem.itemKey.hi) {
+      if (item.slotNo + 12 === changeItem.slotNo) {
         this.items[j] = changeItem.item;
       }
     }
@@ -194,10 +193,10 @@ InventoryData.prototype.useItem = function(item) {
     netGame.equipItem(item.slotNo, 0);
   } else if (item.location === ITEMLOC.INVENTORY) {
     if (ITMTYPETOPART[item.itemType]) {
-      netGame.equipItem(ITMTYPETOPART[item.itemType], item.itemKey);
+      netGame.equipItem(ITMTYPETOPART[item.itemType], item.slotNo + 12);
     } else if (item.itemType === ITEMTYPE.USE) {
       // TODO: Use consumable on TARGET / POSITION
-      netGame.useItem(item.itemKey);
+      netGame.useItem(item.slotNo + 12);
     } else if (item.itemType === ITEMTYPE.RIDE_PART) {
       // TODO: Equip ride part
     }else if (item.itemType === ITEMTYPE.MOUNT) {

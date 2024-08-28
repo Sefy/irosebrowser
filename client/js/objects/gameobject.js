@@ -3,6 +3,8 @@ var GORef = require('./goref');
 
 /**
  * @constructor
+ *
+ * @property {Pawn} pawn
  */
 function GameObject(objType, world) {
   EventEmitter.call(this);

@@ -185,7 +185,7 @@ GameClient.prototype.toggleMount = function(itemKey) {
 
 GameClient.prototype.useItem = function(itemKey) {
   var opak = new RosePacket(0x7a3);
-  opak.addUint64(itemKey);
+  opak.addUint16(itemKey);
   this.socket.sendPacket(opak);
 };
 
@@ -219,8 +219,8 @@ GameClient.prototype.useSkillOnTarget = function(skillSlotNo, targetIdx) {
 
 GameClient.prototype.equipItem = function(slotNo, itemKey) {
   var opak = new RosePacket(0x7a5);
-  opak.addUint32(slotNo);
-  opak.addUint64(itemKey);
+  opak.addUint16(slotNo);
+  opak.addUint16(itemKey);
   this.socket.sendPacket(opak);
 };
 
@@ -437,7 +437,7 @@ GameClient._registerHandler(0x718, function(pak, data) {
   data.changeItems = [];
   for (var j = 0; j < itemCount; ++j) {
     var changeItem = {};
-    changeItem.itemKey = pak.readUint64();
+    changeItem.slotNo = pak.readUint8();
     changeItem.item = pak.readItem();
     data.changeItems.push(changeItem);
   }

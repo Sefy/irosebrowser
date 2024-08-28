@@ -6,7 +6,7 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   overflow: hidden;
-  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
+  cursor: url('/data/3ddata/control/res/cursor.png'), auto;
 }
 
 .thin-scrollbar {
@@ -34,7 +34,7 @@ body {
   color: white;
   font-family: 'Tahoma';
   font-size: small;
-  cursor: url('/data/3DDATA/CONTROL/RES/CURSOR.png'), auto;
+  cursor: url('/data/3ddata/control/res/cursor.png'), auto;
   z-index: 0;
 
   .tooltip {
@@ -866,14 +866,14 @@ body {
 
 .generate-item-iconsheets-single-digit(@n, @i: 1) when (@i =< @n) {
   .item-iconsheet-@{i} {
-    background: url('/data/3DDATA/CONTROL/RES/ICON0@{i}.png');
+    background: url('/data/3ddata/control/res/icon0@{i}.png');
   }
   .generate-item-iconsheets-single-digit(@n, (@i + 1));
 }
 
 .generate-item-iconsheets-double-digit(@n, @i: 10) when (@i =< @n) {
   .item-iconsheet-@{i} {
-    background: url('/data/3DDATA/CONTROL/RES/ICON@{i}.png');
+    background: url('/data/3ddata/control/res/icon@{i}.png');
   }
   .generate-item-iconsheets-double-digit(@n, (@i + 1));
 }
