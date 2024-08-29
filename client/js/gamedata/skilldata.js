@@ -67,13 +67,13 @@ SkillData.prototype._useCommand = function(command) {
     case BASIC_COMMAND.PICK_ITEM:
       const nearestDropItem = GZM.findNearestDropItem();
 
-      console.log('CLOSEST :', nearestDropItem);
-
-      var moveCmd = GC.moveToObj(nearestDropItem);
-      moveCmd.on('finish', function() {
-        console.log('Finished walk-to-object!');
-        netGame.pickupItem(nearestDropItem.serverObjectIdx);
-      });
+      if (nearestDropItem) {
+        var moveCmd = GC.moveToObj(nearestDropItem);
+        moveCmd.on('finish', function () {
+          console.log('Finished walk-to-object!');
+          netGame.pickupItem(nearestDropItem.serverObjectIdx);
+        });
+      }
 
       break;
   default:

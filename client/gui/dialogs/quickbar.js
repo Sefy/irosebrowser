@@ -64,6 +64,15 @@ ui.QuickBarDialog.prototype._update = function() {
   }
 };
 
+/**
+ * @param {number} index
+ *
+ * @returns {ui.IconSlot}
+ */
+ui.QuickBarDialog.prototype.getSlot = function(index) {
+  return this._slots[index];
+}
+
 ui.quickBarDialog = function(hotIcons) {
   return new ui.QuickBarDialog(hotIcons, 0);
 };

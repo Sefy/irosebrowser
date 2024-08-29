@@ -138,12 +138,15 @@ MapManager.prototype.findHighPoint = function(x, y, fromZ) {
   // We found nothing at, lets check upwards to see if this is an error.
   caster = new THREE.Raycaster(new THREE.Vector3(x, y, fromZ), new THREE.Vector3(0, 0, 1));
   pickInfo = this.rayPick(caster);
-  if (!pickInfo) {
+
     // @TODO: this happens a lot, see if it's OK or a problem that should be addressed ..
-    console.warn('Attempted to find high point in an unloaded chunk.');
-  } else {
-    console.warn('Uhhhh... Someone fell through the floor...');
-  }
+    // @TODO: OK ça arrive pas si on defocus pas la fenêtre du navigateur, donc doit être lié à un mouvement / disparition de NPC pendant ce "defocus"
+    // @TODO: on désactive simplement pour l'instant car ça fait rien à part flooder la console ...
+  // if (!pickInfo) {
+  //   console.warn('Attempted to find high point in an unloaded chunk.');
+  // } else {
+  //   console.warn('Uhhhh... Someone fell through the floor...');
+  // }
 
   return undefined;
 };

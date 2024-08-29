@@ -370,6 +370,7 @@ GameClient._registerHandler(0x715, function(pak, data) {
   data.skills = [];
   for (var s = 0; s < 120; s++) {
     var skillData = {};
+    skillData.slot = s;
     skillData.skillIdx = pak.readUint16();
     data.skills.push(skillData);
   }
@@ -576,6 +577,7 @@ GameClient._registerHandler(0x790, function(pak, data) {
 });
 
 GameClient._registerHandler(0x71a, function(pak, data) {
+  // doesn't exist in irose ?
   data.result = pak.readUint8();
   var skillCount = pak.readInt16();
   data.skills = [];
@@ -615,11 +617,15 @@ GameClient._registerHandler(0x7a5, function(pak, data) {
   this._emitPE('char_equip_item', data);
 });
 
+const BIT_MASK_5 = 0b11111;
+const BIT_MASK_11 = 0b11111111111;
+
 GameClient._registerHandler(0x7aa, function(pak, data) {
+  // @TODO: ca merdouille ici, ou sur le serveur, à voir, mais en tous cas le HOTBAR_ICON_TYPE reste à 0 ...
   data.id = pak.readUint8();
   var icon = pak.readUint16();
-  data.type = icon & 0x1f;
-  data.slot = icon >> 5;
+  data.type = icon & BIT_MASK_5;
+  data.slot = (icon >> 5) & BIT_MASK_11;
   this._emitPE('set_hot_icon', data);
 });
 
@@ -782,6 +788,7 @@ GameClient._registerHandler(0x798, function(pak, data) {
   data.defenderObjectIdx = pak.readUint16();
   data.serverDist = pak.readInt16();
   data.posTo = pak.readVector2().divideScalar(100);
+  pak.readInt16(); // pos.z, but useless
   this._emitPE('obj_attack', data);
 });
 

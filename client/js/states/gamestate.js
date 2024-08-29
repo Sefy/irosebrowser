@@ -205,6 +205,15 @@ GameState.prototype.enter = function() {
           gameUi.skillList.toggle();
           break;
       }
+    } else {
+      if (e.code.startsWith('Digit')) {
+        const key = +e.code.substring('Digit'.length) - 1;
+        const slot = gameUi.quickbar.getSlot(key);
+
+        if (slot) {
+          slot.use();
+        }
+      }
     }
   });
 };
